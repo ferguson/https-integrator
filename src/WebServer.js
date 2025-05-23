@@ -54,11 +54,11 @@ export default class WebServer {
         this.app = express();
 
         this.httpsIntegratorServer = new HTTPSIntegratorServer(this.options);
-        await this.httpsIntegrattorServer.init();
+        await this.httpsIntegratorServer.init();
         this.httpsIntegratorServer.addRoutes(this.app);
 
         this.addRoutes(this.app);
-
+	web_server.on('connection', this.app);
         web_server.listen(use_port, this.options.bind, async () => {
             log.log(`server listening on ${this.options.bind}:${use_port}`);
             // if (this.options.use_https && this.options.redirect_http) {

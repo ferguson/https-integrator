@@ -5,5 +5,5 @@ cd $DIR || (echo "error!"; exit 1)
 VIRTUALIZE_ACTIVATE_VIA_SCRIPT=1 source ./activate
 
 echo "starting https-director-server"
-node --env-file config.env --env-file server/secrets.env server/https-director-server.js
+node --env-file config.env ./https-integrator-server.js
 # note: --env-file is a node 20.6+ thing

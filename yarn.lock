@@ -640,6 +640,11 @@ side-channel@^1.1.0:
     side-channel-map "^1.0.1"
     side-channel-weakmap "^1.0.2"
 
+snake-camel@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/snake-camel/-/snake-camel-1.0.9.tgz#35b1fdae042d734c9f8485976fe31de15ba8540e"
+  integrity sha512-2HDmt3MXa6oJMNenrIJelis4cVrvxbOg3vnTAM+59T0vHSBynEMm/puHhgqcxvJ5rXzfWjjgHifJV/SJTOQRkw==
+
 socket.io-adapter@~2.5.2:
   version "2.5.5"
   resolved "https://registry.yarnpkg.com/socket.io-adapter/-/socket.io-adapter-2.5.5.tgz#c7a1f9c703d7756844751b6ff9abfc1780664082"

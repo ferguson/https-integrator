@@ -16,6 +16,7 @@
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
     "http-proxy-middleware": "^3.0.5",
+    "snake-camel": "^1.0.9",
     "socket.io": "^4.8.1"
   }
 }
