@@ -1,0 +1,21 @@
+{
+  "name": "https-integrator",
+  "version": "0.0.1",
+  "main": "src/API.js",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ferguson/https-integrator.git"
+  },
+  "author": "Jon Ferguson <jon@jef.us>",
+  "description": "Combine multiple local micro-services into one unified web interface",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "commander": "^13.1.0",
+    "express": "^5.1.0",
+    "express-async-handler": "^1.2.0",
+    "http-proxy-middleware": "^3.0.5",
+    "socket.io": "^4.8.1"
+  }
+}
