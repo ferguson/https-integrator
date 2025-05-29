@@ -1,15 +1,15 @@
 import { Command as Commander, Option } from 'commander';
 import { toSnake } from 'snake-camel';
 
-export default function parseArgs(argv, options, defaults=null, env_variable_map=null) {
+export default function parseArgs(argv, usage, defaults=null, env_variable_map=null) {
     let commander = new Commander();
 
-    let optionsLines = options.split('\n').filter( line => line.trim().length);
-    for (let optionLine of optionsLines) {
-        if (!optionLine.includes(' - ')) {
+    let usageLines = usage.split('\n').filter( line => line.trim().length);
+    for (let usageLine of usageLines) {
+        if (!usageLine.includes(' - ')) {
             continue;
         }
-        let [ definition, description ] = optionLine.split(' - ');
+        let [ definition, description ] = usageLine.split(' - ');
         // console.log('definition', definition);
         // console.log('description', description);
         definition = definition.trim();

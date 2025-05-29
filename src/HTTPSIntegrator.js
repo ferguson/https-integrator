@@ -1,29 +1,24 @@
-import http from 'http';
-import express from 'express';
+import url from 'node:url';
+import path from 'node:path';
+// import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-//import { freeParser } from '_http_common';
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
-import asyncHandler from 'express-async-handler';
-//import WebSocketStream from 'websocket-stream';
-import { WebSocketServer, createWebSocketStream } from 'ws';
-import { Server as SocketIOServer } from 'socket.io';
+//import asyncHandler from 'express-async-handler';
 
 const log = Object.assign({}, console);
 log.debug = ()=>{};
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const STATIC_DIR = __dirname + '/../../static';
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+// const STATIC_DIR = __dirname + '/../../static';
 
 
-export default class HTTPSIntegratorServer {
+export default class HTTPSIntegrator {
     constructor(options) {
         this.options = options;
     }
 
 
     async init() {
-        this.static_server = express.static(STATIC_DIR);
+        // this.static_server = express.static(STATIC_DIR);
     }
 
 
@@ -34,6 +29,7 @@ export default class HTTPSIntegratorServer {
         // - 8771: bot audio to computer
         // - 8877: computer audio to bot
         // - 8765: RPI commands (e.g., display and sound commands)
+        // we should make this a config file FIXME
 
         app.use(
             '/api/v1/command',
