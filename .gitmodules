@@ -4,3 +4,9 @@
 [submodule "virtualize-node"]
 	path = virtualize-node
 	url = https://github.com/mitmedialab/virtualize-node.git
+[submodule "https-reflector"]
+	path = https-reflector
+	url = https://github.com/ferguson/https-reflector
+[submodule "https-director"]
+	path = https-director
+	url = https://github.com/ferguson/https-director

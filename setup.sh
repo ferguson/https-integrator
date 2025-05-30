@@ -9,7 +9,6 @@ virtualize/setup.sh
 
 source ./activate
 
-### node
-if [[ -f package.json && -d virtualize-node ]]; then
-    yarn install
-fi   
+yarn install
+(cd https-reflector; yarn install)
+(cd https-director; yarn install)

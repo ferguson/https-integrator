@@ -1,1 +1,1 @@
-export { default as HTTPSIntegrator } from './HTTPSIntegrator.js';
+export { default as HTTPSIntegrator, getLocalIPAddress } from './HTTPSIntegrator.js';
