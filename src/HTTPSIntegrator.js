@@ -32,19 +32,15 @@ export default class HTTPSIntegrator {
         // - 8765: RPI commands (e.g., display and sound commands)
         // we should make this a config file FIXME
 
-	// some (all?) of the python servers bind to the external IP address
+        // some (all?) of the python servers bind to the external IP address
         // so use that instead of 'localhost'
-	let ip_address = getLocalIPAddress();
+        let ip_address = getLocalIPAddress();
 
-	app.use((req, res, next) => {
+        app.use((req, res, next) => {
             console.log('HTTPSIntegrator req.path', req.path);
             next();
         });
 
-        app.use(
-            '/api/v1/test',
-            this.createProxyMiddleware({ target: `http://${ip_address}:8778` })
-        );
         app.use(
             '/api/v1/command',
             this.createProxyMiddleware({ target: `http://${ip_address}:8765` })
@@ -65,24 +61,28 @@ export default class HTTPSIntegrator {
             '/api/v1/speaker',
             this.createProxyMiddleware({ target: `http://${ip_address}:8877` })
         );
+        app.use(
+            '/api/v1/upload',
+            this.createProxyMiddleware({ target: `http://${ip_address}:8080` })
+        );
 
-	app.use('/', this.static_server);
+        app.use('/', this.static_server);
     }
 
 
     createProxyMiddleware(options) {
-	let on = {
-	    //proxyReq: (proxyReq, req, res) => {
+        let on = {
+            //proxyReq: (proxyReq, req, res) => {
                 //delete proxyReq.headers['keep-alive'];
                 //console.log(proxyReq);
             //},
-	    error: (err, req, res) => {
-		//console.log('error handler', req);
-		//console.log('error handler', res);
-	        console.error('error handler', err);
-	    },
+            error: (err, req, res) => {
+                //console.log('error handler', req);
+                //console.log('error handler', res);
+                console.error('error handler', err);
+            },
         };
-	options.on = on;
+        options.on = on;
         options.ws = true;
         let proxyMiddleware = createProxyMiddleware(options);
 
@@ -92,7 +92,7 @@ export default class HTTPSIntegrator {
         //    proxyMiddleware(...args);
         //};
         //return debug;
-	return proxyMiddleware;
+        return proxyMiddleware;
     }
 }
 
