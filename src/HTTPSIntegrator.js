@@ -49,10 +49,10 @@ export default class HTTPSIntegrator {
             '/api/v1/video',
             this.createProxyMiddleware({ target: `http://${ip_address}:8001` })
         );
-        app.use(
-            '/api/v1/videopush',
-            this.createProxyMiddleware({ target: `http://${ip_address}:8000` })
-        );
+        //app.use(
+        //    '/api/v1/videopush',
+        //    this.createProxyMiddleware({ target: `http://${ip_address}:8000` })
+        //);
         app.use(
             '/api/v1/microphone',
             this.createProxyMiddleware({ target: `http://${ip_address}:8771` })
@@ -72,10 +72,10 @@ export default class HTTPSIntegrator {
 
     createProxyMiddleware(options) {
         let on = {
-            //proxyReq: (proxyReq, req, res) => {
+            proxyReq: (proxyReq, req, res) => {
                 //delete proxyReq.headers['keep-alive'];
                 //console.log(proxyReq);
-            //},
+            },
             error: (err, req, res) => {
                 //console.log('error handler', req);
                 //console.log('error handler', res);
@@ -86,13 +86,13 @@ export default class HTTPSIntegrator {
         options.ws = true;
         let proxyMiddleware = createProxyMiddleware(options);
 
-        //let debug = (...args) => {
-        //    //let req = args[0];
-        //    //console.log('debug', req.path);
-        //    proxyMiddleware(...args);
-        //};
-        //return debug;
-        return proxyMiddleware;
+        let debug = (...args) => {
+            let req = args[0];
+            console.log('debug', req.path);
+            proxyMiddleware(...args);
+        };
+        return debug;
+        //return proxyMiddleware;
     }
 }
 
