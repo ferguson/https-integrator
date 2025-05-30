@@ -4,7 +4,7 @@ set -e
 read -p "what is the name of your server: " SERVER
 sed -e "s%yourdomain.org%$SERVER%g" config.env.template > config.env
 
-#./setup.sh
+./setup.sh
 
 sed -e "s%/usr/local/https-integrator/%$PWD/%g" https-integrator.service.template > https-integrator.service
 
