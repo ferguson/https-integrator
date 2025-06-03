@@ -42,29 +42,31 @@ export default async function main(argv) {
     let director_options = { ...options, nostatic: true };
     let webServer = new WebServer(director_options, app);
     let director = new HTTPSDirectorDevice(options, webServer);
-
-    let httpsIntegrator = new HTTPSIntegrator(options);
-    await httpsIntegrator.init(devicename);
-    httpsIntegrator.addRoutes(app);
+    let https_server = await director.init();
 
     // we fire up the integrator proxy on port 80, the reflector client uses it
     // but we could make the reflector client go directly to the proxied services FIXME
-    let http_server = http.createServer();
-    http_server.on('request', app);
-    http_server.listen(80, '0.0.0.0', () => {
-        log.log(`http server listening on 0.0.0.0:80`);
-    });
+    // let http_server = http.createServer();
+    // http_server.on('request', app);
+    // http_server.listen(80, '0.0.0.0', () => {
+    //     log.log(`http server listening on 0.0.0.0:80`);
+    // });
 
-    await director.init();
+    let httpsIntegrator = new HTTPSIntegrator(options);
+    await httpsIntegrator.init(devicename);
+    //httpsIntegrator.addProxies(app, [http_server, https_server]);
+    httpsIntegrator.addProxies(app, [https_server]);
+    httpsIntegrator.addRoutes(app);
+
     log.log('https integrator ready');
 
     // now setup the reflector connection
-    let our_ip_address = getLocalIPAddress();
-    let uplink_client_options = {  // linking to myself! we can do better FIXME
-        uplink_to_host: our_ip_address,
-        uplink_to_port: 80,
-    };
-    let hubUplinkClient = new HubUplinkClient(options.reflector, uplink_client_options);
-    await hubUplinkClient.init(devicename);
-    log.log('https-reflector client ready');
+    //let our_ip_address = getLocalIPAddress();
+    //let uplink_client_options = {  // linking to myself! we can do better FIXME
+    //    uplink_to_host: our_ip_address,
+    //    uplink_to_port: 80,
+    //};
+    //let hubUplinkClient = new HubUplinkClient(options.reflector, uplink_client_options);
+    //await hubUplinkClient.init(devicename);
+    //log.log('https-reflector client ready');
 }

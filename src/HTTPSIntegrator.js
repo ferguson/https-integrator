@@ -23,7 +23,7 @@ export default class HTTPSIntegrator {
     }
 
 
-    addRoutes(app) {
+    addProxies(app, servers) {
         // I believe the ports in use are:
         // - 8000: video
         // - 8080: image and sound file server
@@ -41,58 +41,80 @@ export default class HTTPSIntegrator {
             next();
         });
 
-        app.use(
-            '/api/v1/command',
-            this.createProxyMiddleware({ target: `http://${ip_address}:8765` })
-        );
-        app.use(
-            '/api/v1/video',
-            this.createProxyMiddleware({ target: `http://${ip_address}:8001` })
-        );
-        //app.use(
-        //    '/api/v1/videopush',
-        //    this.createProxyMiddleware({ target: `http://${ip_address}:8000` })
-        //);
-        app.use(
-            '/api/v1/microphone',
-            this.createProxyMiddleware({ target: `http://${ip_address}:8771` })
-        );
-        app.use(
-            '/api/v1/speaker',
-            this.createProxyMiddleware({ target: `http://${ip_address}:8877` })
-        );
-        app.use(
-            '/api/v1/upload',
-            this.createProxyMiddleware({ target: `http://${ip_address}:8080` })
-        );
+	this.useWSProxy(app, servers, '/api/v1/command',    `ws://${ip_address}:8765`);
+        this.useProxy(app, servers, '/api/v1/video',      `http://${ip_address}:8001`);
+        //this.useProxy(app, servers, '/api/v1/videopush',  `http://${ip_address}:8000`);
+        this.useWSProxy(app, servers, '/api/v1/microphone', `http://${ip_address}:8771`);
+        this.useWSProxy(app, servers, '/api/v1/speaker',    `http://${ip_address}:8877`);
+        this.useProxy(app, servers, '/api/v1/upload',     `http://${ip_address}:8080`);
+    }
+	
 
+    addRoutes(app) {
         app.use('/', this.static_server);
     }
 
 
-    createProxyMiddleware(options) {
-        let on = {
-            proxyReq: (proxyReq, req, res) => {
-                //delete proxyReq.headers['keep-alive'];
-                //console.log(proxyReq);
-            },
-            error: (err, req, res) => {
-                //console.log('error handler', req);
-                //console.log('error handler', res);
-                console.error('error handler', err);
-            },
-        };
-        options.on = on;
-        options.ws = true;
-        let proxyMiddleware = createProxyMiddleware(options);
+    useWSProxy(app, servers, path, target) {
+	return this.useProxy(app, servers, path, target, true);
+    }
+    useProxy(app, servers, path, target, wsonly=false) {
+	servers = Array.isArray(servers) ? servers : [servers];
+	let proxy = this.createProxy(path, target, wsonly);
+        app.use(path, proxy);
+	if (wsonly) {
+	    let i = 0;
+	    for (let server of servers) {
+		let n = 1;
+		n++;
+		server.on('upgrade', (req, socket, head) => {
+		    if (req.url.startsWith(path)) {
+			log.log(n, req.url);
+			log.log('req.headers', req.headers);
+			proxy.upgrade(req, socket, head);
+		    }
+		});
+	    }
+	}
+    }
 
-        let debug = (...args) => {
-            let req = args[0];
-            console.log('debug', req.path);
-            proxyMiddleware(...args);
+
+    createProxy(path, target, wsonly=false) {
+	let path_regexp = `^${path}`;
+	let pathRewrite = {};
+	pathRewrite[path_regexp] = '';
+	let options = {
+	    target: target,
+	    changeOrigin: true,
+	    pathRewrite,
+	    ws: true,
+	    secure: false,
+  	    agent: false,
+	    logLevel: 'debug',
+	    on: {
+		proxyReq: (proxyReq, req, res) => {
+                    //delete proxyReq.headers['keep-alive'];
+                    //console.log(proxyReq);
+		},
+		error: (err, req, res) => {
+                    //console.log('error handler', req);
+                    //console.log('error handler', res);
+                    console.error('error handler', err);
+		}
+	    },
         };
-        return debug;
-        //return proxyMiddleware;
+	if (!wsonly) {
+	    options.headers = { connection: 'close' };
+	}
+        let proxy = createProxyMiddleware(options);
+
+        // let debug = (...args) => {
+        //     let req = args[0];
+        //     console.log('debug', req.path);
+        //     proxy(...args);
+        // };
+        // return debug;
+        return proxy;
     }
 }
 
