@@ -87,7 +87,7 @@ export default class HTTPSIntegrator {
 	    target: target,
 	    changeOrigin: true,
 	    pathRewrite,
-	    ws: true,
+	    //ws: true,
 	    secure: false,
   	    agent: false,
 	    logLevel: 'debug',
