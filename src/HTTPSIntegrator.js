@@ -96,6 +96,14 @@ export default class HTTPSIntegrator {
                     //delete proxyReq.headers['keep-alive'];
                     //log.log(proxyReq);
                 },
+		proxyRes: (proxyRes, req, res) => {
+		    proxyRes.headers['Access-Control-Allow-Origin'] = '*';
+	            proxyRes.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS';
+                    proxyRes.headers['Access-Control-Allow-Headers'] = '*';
+                    proxyRes.headers['Access-Control-Allow-Credentials']= 'true';
+                    proxyRes.headers['Access-Control-Allow-Private-Network'] = 'true';
+		    // delete proxyRes.headers['x-removed']; // remove header from response
+                },
                 error: (err, req, res) => {
                     //log.log('error handler', req);
                     //log.log('error handler', res);
